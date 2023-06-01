@@ -6,9 +6,22 @@ const jose = require('jose');
 async function requiresValidLogoutToken(req, res, next) {
 
   // get remote key set for token verification
-  const JWKS = jose.createRemoteJWKSet(
-    new URL(process.env.ISSUER_BASE_URL + '/.well-known/jwks.json')
-  );
+//  const JWKS = jose.createRemoteJWKSet(
+ ////   new URL(process.env.ISSUER_BASE_URL + '/.well-known/jwks.json')
+  //);
+
+  const JWKS = jose.createLocalJWKSet({
+    keys: [
+      {
+        kty: "RSA",
+        e: "AQAB",
+        use: "sig",
+        kid: "rRA9yjBPdbrrSznPHLJbiVyCQjeUDQHXw0vHrA5_Gs0",
+        alg: "RS256",
+        n: "5IuBN8BoSFYISlu2_gzcucNJpP93TZEFkrJoKqfdImN9h7l9l6tSLjG4H-jENJ_8dzukkjTFnNTiMA5gWa4g9mI4i1vh5npddnGM5inoUPPoivaSmtYSndJNZdbZZoOESYepy0PdBIBqy8j3Y_Ddrt6PRIrwWN0lSIAxUhgyDTjjxT0U65RZq63MdFHBVowIle05cB0hoVdO9AJiN4gu2zN-aQMwMRlZ3sgo4tnvdsXf6tXnOGeFzEphfNuqwSkyvnIuZNe8DLtdV5bS97CWyPp-uPtAXnz3ABV6dz7OMGrtpI32YcBBHeefOusHoENhquHz-oL_QM9RccemmALXjw"
+    },
+    ],
+  })
 
   const logoutToken = req.body.logout_token;
 
@@ -24,7 +37,7 @@ async function requiresValidLogoutToken(req, res, next) {
         issuer: process.env.ISSUER_BASE_URL + '/',
         audience: process.env.CLIENT_ID,
         typ: 'JWT',
-        maxTokenAge: '2 minutes',
+        maxTokenAge: '10 minutes',
       }
     );
 
